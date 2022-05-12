@@ -18,5 +18,5 @@ class Recall {
         component = json['Component'],
         summary = json["Summary"],
         consequence = json["Consequence"],
-        remedy = json["Rememdy"];
+        remedy = json["Remedy"];
 }
