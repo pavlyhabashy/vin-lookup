@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:string_validator/string_validator.dart';
+import 'package:vin_lookup/classes/user.dart';
 import 'package:vin_lookup/networking.dart/authentication.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -26,10 +27,10 @@ class _SignInScreenState extends State<SignInScreen> {
       var json = jsonDecode(response.body);
       print(json);
       if (response.statusCode == 200) {
-        var id = json["data"]["id"].toString();
-        var auth = json["data"]["authentication_token"];
+        User user = User.fromJson(json["data"]);
 
-        var userData = await Authentication().getUser(id, auth);
+        var userData =
+            await Authentication().getUser(user.id, user.authenticationToken);
         print(userData.statusCode);
         print(jsonDecode(userData.body));
       }
