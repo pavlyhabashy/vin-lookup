@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:string_validator/string_validator.dart';
-import 'package:vin_lookup/authentication.dart';
+import 'package:vin_lookup/networking.dart/authentication.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
