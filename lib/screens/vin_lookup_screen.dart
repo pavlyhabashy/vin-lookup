@@ -26,6 +26,10 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Vin Lookup"),
+          automaticallyImplyLeading: false,
+        ),
         body: SafeArea(
           child: Form(
             key: _formKey,
