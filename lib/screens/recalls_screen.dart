@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:vin_lookup/classes/recall.dart';
 import 'package:vin_lookup/classes/vehicle.dart';
 
 class RecallsScreen extends StatelessWidget {
@@ -20,39 +22,84 @@ class RecallsScreen extends StatelessWidget {
             child: Column(
               children: [
                 _buildVehicleInfo(context),
-                ...vehicle.recalls!.map(
-                  (recall) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              _buildRecallInfoBlock(
-                                  context, "Component", recall.component),
-                              const SizedBox(height: 16.0),
-                              _buildRecallInfoBlock(
-                                  context, "Summary", recall.summary),
-                              const SizedBox(height: 16.0),
-                              _buildRecallInfoBlock(
-                                  context, "Consequence", recall.consequence),
-                              const SizedBox(height: 16.0),
-                              _buildRecallInfoBlock(
-                                  context, "Remedy", recall.remedy),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                _buildRecallCards(context),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  Column _buildRecallCards(BuildContext context) => Column(
+        children: [
+          ...vehicle.recalls!
+              .asMap()
+              .map(
+                (index, recall) {
+                  return MapEntry(
+                    index,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 8.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Reported: ${_formatDate(recall)}",
+                                      style:
+                                          Theme.of(context).textTheme.caption,
+                                    ),
+                                    Text(
+                                      "${index + 1}/${vehicle.recalls?.length}",
+                                      style:
+                                          Theme.of(context).textTheme.caption,
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Column(
+                                children: [
+                                  _buildRecallInfoBlock(
+                                      context, "Component", recall.component),
+                                  const SizedBox(height: 16.0),
+                                  _buildRecallInfoBlock(
+                                      context, "Summary", recall.summary),
+                                  const SizedBox(height: 16.0),
+                                  _buildRecallInfoBlock(context, "Consequence",
+                                      recall.consequence),
+                                  const SizedBox(height: 16.0),
+                                  _buildRecallInfoBlock(
+                                      context, "Remedy", recall.remedy),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              )
+              .values
+              .toList(),
+        ],
+      );
+
+  String _formatDate(Recall recall) {
+    DateFormat inputFormat = DateFormat("dd/mm/yyyy");
+    var inputDate = inputFormat.parse(recall.reportReceivedDate);
+    DateFormat outputFormat = DateFormat("MMMM d, yyyy");
+    String outputDate = outputFormat.format(inputDate);
+    return outputDate;
   }
 
   Padding _buildVehicleInfo(BuildContext context) {
@@ -73,10 +120,12 @@ class RecallsScreen extends StatelessWidget {
       BuildContext context, String title, String info) {
     return Column(
       children: [
-        Text(title),
+        Text(
+          title,
+        ),
         Text(
           info,
-          style: Theme.of(context).textTheme.headline5,
+          style: Theme.of(context).textTheme.headline6,
         ),
       ],
     );
