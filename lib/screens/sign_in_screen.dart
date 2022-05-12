@@ -19,10 +19,11 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen> {
   final _formKey = GlobalKey<FormState>();
-  String _email = "flutter@example.com";
-  String _password = "Ox8CiV2eRIO72m19euLh";
   final RoundedLoadingButtonController _btnController =
       RoundedLoadingButtonController();
+
+  String _email = "flutter@example.com";
+  String _password = "Ox8CiV2eRIO72m19euLh";
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +53,30 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
+  Widget _buildEmailTF() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 30.0,
+        vertical: 10.0,
+      ),
+      child: TextFormField(
+        initialValue: _email,
+        decoration: const InputDecoration(labelText: 'Email'),
+        validator: (input) =>
+            !isEmail(input!) ? 'Please enter a valid email' : null,
+        onChanged: (input) => _email = input,
+        textInputAction: TextInputAction.next,
+        keyboardType: TextInputType.emailAddress,
+        autocorrect: false,
+        enableSuggestions: true,
+        inputFormatters: [
+          // Disable spaces
+          FilteringTextInputFormatter.deny(RegExp(r'\s')),
+        ],
+      ),
+    );
+  }
+
   Widget _buildLoginButton(BuildContext context) {
     return RoundedLoadingButton(
       color: Theme.of(context).primaryColor,
@@ -62,6 +87,34 @@ class _SignInScreenState extends State<SignInScreen> {
       controller: _btnController,
       onPressed: _submit,
     );
+  }
+
+  Widget _buildPasswordTF() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 30.0,
+        vertical: 10.0,
+      ),
+      child: TextFormField(
+        initialValue: _password,
+        decoration: const InputDecoration(labelText: 'Password'),
+        validator: (input) =>
+            input!.isEmpty ? 'Must be at least 1 character long' : null,
+        onChanged: (input) => _password = input,
+        obscureText: true,
+        inputFormatters: [
+          // Disable spaces
+          FilteringTextInputFormatter.deny(RegExp(r'\s')),
+        ],
+      ),
+    );
+  }
+
+  _loginButtonErrorReset() {
+    _btnController.error();
+    Future.delayed(const Duration(seconds: 1), () {
+      _btnController.reset();
+    });
   }
 
   _submit() async {
@@ -112,55 +165,5 @@ class _SignInScreenState extends State<SignInScreen> {
         );
         _loginButtonErrorReset();
     }
-  }
-
-  _loginButtonErrorReset() {
-    _btnController.error();
-    Future.delayed(const Duration(seconds: 1), () {
-      _btnController.reset();
-    });
-  }
-
-  Widget _buildPasswordTF() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 30.0,
-        vertical: 10.0,
-      ),
-      child: TextFormField(
-        initialValue: _password,
-        decoration: const InputDecoration(labelText: 'Password'),
-        validator: (input) =>
-            input!.length < 6 ? 'Must be at least 6 characters' : null,
-        onChanged: (input) => _password = input,
-        obscureText: true,
-        inputFormatters: [
-          FilteringTextInputFormatter.deny(RegExp(r'\s')),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEmailTF() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 30.0,
-        vertical: 10.0,
-      ),
-      child: TextFormField(
-        initialValue: _email,
-        decoration: const InputDecoration(labelText: 'Email'),
-        validator: (input) =>
-            !isEmail(input!) ? 'Please enter a valid email' : null,
-        onChanged: (input) => _email = input,
-        textInputAction: TextInputAction.next,
-        keyboardType: TextInputType.emailAddress,
-        autocorrect: false,
-        enableSuggestions: true,
-        inputFormatters: [
-          FilteringTextInputFormatter.deny(RegExp(r'\s')),
-        ],
-      ),
-    );
   }
 }
