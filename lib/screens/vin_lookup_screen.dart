@@ -64,35 +64,9 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    TextFormField(
-                      initialValue: _vin,
-                      decoration:
-                          const InputDecoration(labelText: 'Enter Your VIN'),
-                      keyboardType: TextInputType.text,
-                      autocorrect: false,
-                      enableSuggestions: false,
-                      validator: (input) {
-                        if (input!.length != 17) {
-                          return 'Must be at least 17 characters';
-                        }
-                        if (!isAlphanumeric(input)) {
-                          return 'Must be letters and numbers';
-                        }
-                        return null;
-                      },
-                      inputFormatters: [
-                        FilteringTextInputFormatter.deny(RegExp(r'\s')),
-                      ],
-                      onChanged: (input) => _vin = input,
-                    ),
+                    _buildVINInputTF(),
                     const SizedBox(height: 32),
-                    RoundedLoadingButton(
-                      color: Theme.of(context).primaryColor,
-                      child: const Text('Look Up VIN',
-                          style: TextStyle(color: Colors.white)),
-                      controller: _btnController,
-                      onPressed: _submit,
-                    ),
+                    _buildLookupButton(context),
                   ],
                 ),
               ),
@@ -100,6 +74,38 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  RoundedLoadingButton _buildLookupButton(BuildContext context) {
+    return RoundedLoadingButton(
+      color: Theme.of(context).primaryColor,
+      child: const Text('Look Up VIN', style: TextStyle(color: Colors.white)),
+      controller: _btnController,
+      onPressed: _submit,
+    );
+  }
+
+  TextFormField _buildVINInputTF() {
+    return TextFormField(
+      initialValue: _vin,
+      decoration: const InputDecoration(labelText: 'Enter Your VIN'),
+      keyboardType: TextInputType.text,
+      autocorrect: false,
+      enableSuggestions: false,
+      validator: (input) {
+        if (input!.length != 17) {
+          return 'Must be at least 17 characters';
+        }
+        if (!isAlphanumeric(input)) {
+          return 'Must be letters and numbers';
+        }
+        return null;
+      },
+      inputFormatters: [
+        FilteringTextInputFormatter.deny(RegExp(r'\s')),
+      ],
+      onChanged: (input) => _vin = input,
     );
   }
 
