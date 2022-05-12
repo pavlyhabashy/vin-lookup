@@ -41,9 +41,7 @@ class Authentication {
   Future<bool> autoLogin() async {
     String? userData = await FlutterKeychain.get(key: "user");
     if (userData != null) {
-      print(userData);
       User user = User.fromJson(jsonDecode(userData));
-      print(user.authenticationToken);
       return true;
     }
 
