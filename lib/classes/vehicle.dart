@@ -16,4 +16,8 @@ class Vehicle {
   List<Recall>? getRecalls() {
     return recalls;
   }
+
+  setRecalls(List<Recall> recalls) {
+    this.recalls = recalls;
+  }
 }
