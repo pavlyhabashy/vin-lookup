@@ -84,13 +84,7 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
   _submit() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      if (!(await checkConnection())) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("No internet connection."),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
+      if (!(await checkConnection(context))) {
         return;
       }
       await _lookUpVIN();
