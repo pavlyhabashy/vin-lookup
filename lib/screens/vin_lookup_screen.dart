@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart';
+import 'package:flutter_keychain/flutter_keychain.dart';
 import 'package:string_validator/string_validator.dart';
 import 'package:vin_lookup/classes/recall.dart';
 import 'package:vin_lookup/classes/vehicle.dart';
 import 'package:vin_lookup/networking.dart/shared.dart';
 import 'package:vin_lookup/networking.dart/vin_lookup_requests.dart';
+import 'package:vin_lookup/screens/profile_screen.dart';
 import 'package:vin_lookup/screens/recalls_screen.dart';
 
 class VinLookupScreen extends StatefulWidget {
@@ -20,55 +21,78 @@ class VinLookupScreen extends StatefulWidget {
 
 class _VinLookupScreenState extends State<VinLookupScreen> {
   final _formKey = GlobalKey<FormState>();
-  String _vin = "5J8TB1H29CA003675";
+  String _vin = "WAUYGAFC6CN174200";
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Vin Lookup"),
-          automaticallyImplyLeading: false,
-        ),
-        body: SafeArea(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                TextFormField(
-                  initialValue: _vin,
-                  decoration:
-                      const InputDecoration(labelText: 'Enter Your VIN'),
-                  keyboardType: TextInputType.text,
-                  autocorrect: false,
-                  enableSuggestions: false,
-                  validator: (input) {
-                    if (input!.length != 17) {
-                      return 'Must be at least 17 characters';
-                    }
-                    if (!isAlphanumeric(input)) {
-                      return 'Must be letters and numbers';
-                    }
-                    return null;
-                  },
-                  inputFormatters: [
-                    FilteringTextInputFormatter.deny(RegExp(r'\s')),
-                  ],
-                  onChanged: (input) => _vin = input,
-                ),
-                TextButton(
-                  onPressed: _submit,
-                  child: const Text(
-                    'Look Up',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                    ),
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: WillPopScope(
+        onWillPop: () async => false,
+        child: Scaffold(
+          floatingActionButton: FloatingActionButton(
+            onPressed: () async {
+              await FlutterKeychain.remove(key: "user");
+              Navigator.pop(context);
+            },
+          ),
+          appBar: AppBar(
+            title: const Text("Vin Lookup"),
+            automaticallyImplyLeading: false,
+            actions: [
+              IconButton(
+                onPressed: () => Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (_) => const ProfileScreen(),
                   ),
                 ),
-              ],
+                icon: const Icon(Icons.person),
+              )
+            ],
+          ),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    TextFormField(
+                      initialValue: _vin,
+                      decoration:
+                          const InputDecoration(labelText: 'Enter Your VIN'),
+                      keyboardType: TextInputType.text,
+                      autocorrect: false,
+                      enableSuggestions: false,
+                      validator: (input) {
+                        if (input!.length != 17) {
+                          return 'Must be at least 17 characters';
+                        }
+                        if (!isAlphanumeric(input)) {
+                          return 'Must be letters and numbers';
+                        }
+                        return null;
+                      },
+                      inputFormatters: [
+                        FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                      ],
+                      onChanged: (input) => _vin = input,
+                    ),
+                    TextButton(
+                      onPressed: _submit,
+                      child: const Text(
+                        'Look Up',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
