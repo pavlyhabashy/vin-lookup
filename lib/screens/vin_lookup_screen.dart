@@ -23,44 +23,48 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              TextFormField(
-                initialValue: _vin,
-                decoration: const InputDecoration(labelText: 'Enter Your VIN'),
-                keyboardType: TextInputType.text,
-                autocorrect: false,
-                enableSuggestions: false,
-                validator: (input) {
-                  if (input!.length != 17) {
-                    return 'Must be at least 17 characters';
-                  }
-                  if (!isAlphanumeric(input)) {
-                    return 'Must be letters and numbers';
-                  }
-                  return null;
-                },
-                inputFormatters: [
-                  FilteringTextInputFormatter.deny(RegExp(r'\s')),
-                ],
-                onChanged: (input) => _vin = input,
-              ),
-              TextButton(
-                onPressed: _submit,
-                child: const Text(
-                  'Look Up',
-                  style: TextStyle(
-                    fontSize: 18.0,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        body: SafeArea(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                TextFormField(
+                  initialValue: _vin,
+                  decoration:
+                      const InputDecoration(labelText: 'Enter Your VIN'),
+                  keyboardType: TextInputType.text,
+                  autocorrect: false,
+                  enableSuggestions: false,
+                  validator: (input) {
+                    if (input!.length != 17) {
+                      return 'Must be at least 17 characters';
+                    }
+                    if (!isAlphanumeric(input)) {
+                      return 'Must be letters and numbers';
+                    }
+                    return null;
+                  },
+                  inputFormatters: [
+                    FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                  ],
+                  onChanged: (input) => _vin = input,
+                ),
+                TextButton(
+                  onPressed: _submit,
+                  child: const Text(
+                    'Look Up',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
