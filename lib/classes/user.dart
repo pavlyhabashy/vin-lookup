@@ -5,6 +5,7 @@ class User {
   final String phoneNumber;
   final String country;
   final String authenticationToken;
+  String? password;
 
   User(
     this.id,
@@ -30,5 +31,10 @@ class User {
         'phone_number': phoneNumber,
         'country': country,
         'authentication_token': authenticationToken,
+        'password': password,
       };
+
+  addPassword(String password) {
+    this.password = password;
+  }
 }
