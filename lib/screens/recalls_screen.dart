@@ -13,42 +13,87 @@ class RecallsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text("Recalls")),
       body: SafeArea(
+        bottom: false,
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Column(
-                    children: [
-                      const Text("Make"),
-                      Text(vehicle.make),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      const Text("Model"),
-                      Text(vehicle.model),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      const Text("Year"),
-                      Text(vehicle.year),
-                    ],
-                  ),
-                ],
-              ),
-              ...vehicle.recalls!.map(
-                (recall) {
-                  return Text('Entry ${recall.summary}');
-                },
-              ),
-            ],
+          child: SafeArea(
+            child: Column(
+              children: [
+                _buildVehicleInfo(context),
+                ...vehicle.recalls!.map(
+                  (recall) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              _buildRecallInfoBlock(
+                                  context, "Component", recall.component),
+                              const SizedBox(height: 16.0),
+                              _buildRecallInfoBlock(
+                                  context, "Summary", recall.summary),
+                              const SizedBox(height: 16.0),
+                              _buildRecallInfoBlock(
+                                  context, "Consequence", recall.consequence),
+                              const SizedBox(height: 16.0),
+                              _buildRecallInfoBlock(
+                                  context, "Remedy", recall.remedy),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  Padding _buildVehicleInfo(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildVehicleInfoColumn(context, "Make", vehicle.make),
+          _buildVehicleInfoColumn(context, "Model", vehicle.model),
+          _buildVehicleInfoColumn(context, "Year", vehicle.year),
+        ],
+      ),
+    );
+  }
+
+  Column _buildVehicleInfoColumn(
+      BuildContext context, String title, String info) {
+    return Column(
+      children: [
+        Text(title),
+        Text(
+          info,
+          style: Theme.of(context).textTheme.headline5,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRecallInfoBlock(
+      BuildContext context, String title, String info) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: Theme.of(context).textTheme.headline6,
+        ),
+        const SizedBox(height: 8),
+        Text('Entry $info'),
+      ],
     );
   }
 }
