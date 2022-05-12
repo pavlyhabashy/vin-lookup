@@ -24,45 +24,6 @@ class _SignInScreenState extends State<SignInScreen> {
   final RoundedLoadingButtonController _btnController =
       RoundedLoadingButtonController();
 
-  _submit() async {
-    if (!_formKey.currentState!.validate()) {
-      _btnController.error();
-      Future.delayed(const Duration(seconds: 1), () {
-        _btnController.reset();
-      });
-      return;
-    }
-
-    if (!(await checkConnection(context))) {
-      _btnController.error();
-      Future.delayed(const Duration(seconds: 1), () {
-        _btnController.reset();
-      });
-      return;
-    }
-
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      var response = await Authentication().login(_email, _password);
-
-      if (response.statusCode == 200) {
-        var json = jsonDecode(response.body);
-        User user = User.fromJson(json["data"]);
-        Authentication().saveUser(user);
-        Navigator.push(
-          context,
-          CupertinoPageRoute(
-            builder: (_) => const VinLookupScreen(),
-          ),
-        );
-        // var userData =
-        //     await Authentication().getUser(user.id, user.authenticationToken);
-        // print(userData.statusCode);
-        // print(jsonDecode(userData.body));
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -81,15 +42,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   _buildEmailTF(),
                   _buildPasswordTF(),
                   const SizedBox(height: 20.0),
-                  RoundedLoadingButton(
-                    color: Theme.of(context).primaryColor,
-                    child: const Text(
-                      'Login',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    controller: _btnController,
-                    onPressed: _submit,
-                  ),
+                  _buildLoginButton(context),
                 ],
               ),
             ),
@@ -99,7 +52,76 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  Padding _buildPasswordTF() {
+  Widget _buildLoginButton(BuildContext context) {
+    return RoundedLoadingButton(
+      color: Theme.of(context).primaryColor,
+      child: const Text(
+        'Login',
+        style: TextStyle(color: Colors.white),
+      ),
+      controller: _btnController,
+      onPressed: _submit,
+    );
+  }
+
+  _submit() async {
+    // Dismiss keyboard
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    // Check input params are valid
+    if (!_formKey.currentState!.validate()) {
+      _loginButtonErrorReset();
+      return;
+    }
+
+    // Check internet connection
+    if (!(await checkConnection(context))) {
+      _loginButtonErrorReset();
+      return;
+    }
+
+    // Save form state
+    _formKey.currentState!.save();
+
+    // Attempt login
+    var response = await Authentication().login(_email, _password);
+    switch (response.statusCode) {
+      case 200: // Success
+
+        // Create and save user info and credentials
+        User user = User.fromJson(jsonDecode(response.body)["data"]);
+        user.addPassword(_password);
+        Authentication().saveUser(user);
+
+        // Go to VIN Lookup Screen
+        Navigator.push(
+          context,
+          CupertinoPageRoute(
+            builder: (_) => const VinLookupScreen(),
+          ),
+        );
+        _btnController.reset();
+
+        break;
+      default:
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Something went wrong. Please try again."),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        _loginButtonErrorReset();
+    }
+  }
+
+  _loginButtonErrorReset() {
+    _btnController.error();
+    Future.delayed(const Duration(seconds: 1), () {
+      _btnController.reset();
+    });
+  }
+
+  Widget _buildPasswordTF() {
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 30.0,
@@ -119,7 +141,7 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  Padding _buildEmailTF() {
+  Widget _buildEmailTF() {
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 30.0,
