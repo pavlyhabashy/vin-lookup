@@ -17,12 +17,13 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.green,
+        appBarTheme: AppBarTheme.of(context).copyWith(elevation: 0),
       ),
       home: FutureBuilder<bool>(
         future: Authentication().autoLogin(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const CircularProgressIndicator();
+            return const Scaffold(body: CircularProgressIndicator());
           }
           if (snapshot.data == false) {
             return const SignInScreen();
