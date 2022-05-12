@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:string_validator/string_validator.dart';
 import 'package:vin_lookup/classes/recall.dart';
 import 'package:vin_lookup/classes/vehicle.dart';
+import 'package:vin_lookup/screens/recalls_screen.dart';
 
 class VinLookupScreen extends StatefulWidget {
   const VinLookupScreen({Key? key}) : super(key: key);
@@ -142,5 +144,11 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
       recalls.add(Recall.fromJson(result));
     }
     vehicle.setRecalls(recalls);
+    Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (_) => RecallsScreen(vehicle: vehicle),
+      ),
+    );
   }
 }
