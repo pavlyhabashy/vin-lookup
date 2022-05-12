@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:flutter_keychain/flutter_keychain.dart';
 import 'package:http/http.dart';
+import 'package:vin_lookup/classes/user.dart';
 
 class Authentication {
   Future<Response> login(String email, String password) {
@@ -34,5 +36,22 @@ class Authentication {
         'X-Key-Inflection': 'snake',
       },
     );
+  }
+
+  Future<bool> autoLogin() async {
+    String? userData = await FlutterKeychain.get(key: "user");
+    if (userData != null) {
+      print(userData);
+      User user = User.fromJson(jsonDecode(userData));
+      print(user.authenticationToken);
+      return true;
+    }
+
+    return false;
+  }
+
+  saveUser(User user) async {
+    await FlutterKeychain.put(
+        key: "user", value: jsonEncode(user.toJson()).toString());
   }
 }

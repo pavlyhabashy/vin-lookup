@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:string_validator/string_validator.dart';
 import 'package:vin_lookup/classes/user.dart';
 import 'package:vin_lookup/networking.dart/authentication.dart';
+import 'package:vin_lookup/screens/vin_lookup_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -22,17 +24,21 @@ class _SignInScreenState extends State<SignInScreen> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       var response = await Authentication().login(_email, _password);
-      print(response.statusCode);
 
-      var json = jsonDecode(response.body);
-      print(json);
       if (response.statusCode == 200) {
+        var json = jsonDecode(response.body);
         User user = User.fromJson(json["data"]);
-
-        var userData =
-            await Authentication().getUser(user.id, user.authenticationToken);
-        print(userData.statusCode);
-        print(jsonDecode(userData.body));
+        Authentication().saveUser(user);
+        Navigator.push(
+          context,
+          CupertinoPageRoute(
+            builder: (_) => const VinLookupScreen(),
+          ),
+        );
+        // var userData =
+        //     await Authentication().getUser(user.id, user.authenticationToken);
+        // print(userData.statusCode);
+        // print(jsonDecode(userData.body));
       }
     }
   }

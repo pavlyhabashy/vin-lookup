@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:vin_lookup/networking.dart/authentication.dart';
 import 'package:vin_lookup/screens/sign_in_screen.dart';
+import 'package:vin_lookup/screens/vin_lookup_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,12 +13,23 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'VIN Lookup',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: const SignInScreen(),
+      home: FutureBuilder<bool>(
+        future: Authentication().autoLogin(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const CircularProgressIndicator();
+          }
+          if (snapshot.data == false) {
+            return const SignInScreen();
+          }
+          return const VinLookupScreen();
+        },
+      ),
     );
   }
 }
