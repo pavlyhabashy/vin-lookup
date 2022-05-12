@@ -22,9 +22,10 @@ class VinLookupScreen extends StatefulWidget {
 
 class _VinLookupScreenState extends State<VinLookupScreen> {
   final _formKey = GlobalKey<FormState>();
-  String _vin = "WAUYGAFC6CN174200";
   final RoundedLoadingButtonController _btnController =
       RoundedLoadingButtonController();
+
+  String _vin = "WAUYGAFC6CN174200";
 
   @override
   Widget build(BuildContext context) {
@@ -102,21 +103,11 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
     );
   }
 
-  _submit() async {
-    FocusManager.instance.primaryFocus?.unfocus();
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      if (!(await checkConnection(context))) {
-        _btnController.error();
-        _btnController.reset();
-
-        return;
-      }
-      await _lookUpVIN();
-    } else {
-      _btnController.error();
+  _loginButtonErrorReset() {
+    _btnController.error();
+    Future.delayed(const Duration(seconds: 1), () {
       _btnController.reset();
-    }
+    });
   }
 
   _lookUpVIN() async {
@@ -165,5 +156,20 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
       ),
     );
     _btnController.reset();
+  }
+
+  _submit() async {
+    FocusManager.instance.primaryFocus?.unfocus();
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      if (!(await checkConnection(context))) {
+        _loginButtonErrorReset();
+
+        return;
+      }
+      await _lookUpVIN();
+    } else {
+      _loginButtonErrorReset();
+    }
   }
 }
