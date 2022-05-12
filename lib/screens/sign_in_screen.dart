@@ -105,7 +105,7 @@ class _SignInScreenState extends State<SignInScreen> {
         initialValue: _email,
         decoration: const InputDecoration(labelText: 'Email'),
         validator: (input) =>
-            isEmail(input!) ? 'Please enter a valid email' : null,
+            !isEmail(input!) ? 'Please enter a valid email' : null,
         onChanged: (input) => _email = input,
         textInputAction: TextInputAction.next,
         keyboardType: TextInputType.emailAddress,
