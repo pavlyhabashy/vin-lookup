@@ -8,6 +8,7 @@ import 'package:string_validator/string_validator.dart';
 import 'package:vin_lookup/classes/recall.dart';
 import 'package:vin_lookup/classes/vehicle.dart';
 import 'package:vin_lookup/networking.dart/shared.dart';
+import 'package:vin_lookup/networking.dart/vin_lookup_requests.dart';
 import 'package:vin_lookup/screens/recalls_screen.dart';
 
 class VinLookupScreen extends StatefulWidget {
@@ -72,20 +73,6 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  Future<Response> vinGetRequest(String vin) {
-    return get(
-      Uri.parse(
-          'https://vpic.nhtsa.dot.gov/api/vehicles/decodevin/$vin?format=json'),
-    );
-  }
-
-  Future<Response> recallGetRequest(String make, String model, String year) {
-    return get(
-      Uri.parse(
-          'https://api.nhtsa.gov/recalls/recallsByVehicle?make=$make&model=$model&modelYear=$year'),
     );
   }
 
