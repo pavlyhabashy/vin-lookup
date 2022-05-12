@@ -93,7 +93,7 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
 
   _lookUpVIN() async {
     var response = await vinGetRequest(_vin);
-    var results = jsonDecode(response.body)["Results"] as List;
+    var results = jsonDecode(response.body)["Results"] as List<dynamic>;
     String make = "", model = "", year = "";
     for (var result in results) {
       switch (result["Variable"]) {
