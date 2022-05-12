@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:string_validator/string_validator.dart';
 import 'package:vin_lookup/classes/user.dart';
 import 'package:vin_lookup/networking.dart/authentication.dart';
+import 'package:vin_lookup/networking.dart/shared.dart';
 import 'package:vin_lookup/screens/vin_lookup_screen.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -19,8 +21,26 @@ class _SignInScreenState extends State<SignInScreen> {
   final _formKey = GlobalKey<FormState>();
   String _email = "flutter@example.com";
   String _password = "Ox8CiV2eRIO72m19euLh";
+  final RoundedLoadingButtonController _btnController =
+      RoundedLoadingButtonController();
 
   _submit() async {
+    if (!_formKey.currentState!.validate()) {
+      _btnController.error();
+      Future.delayed(const Duration(seconds: 1), () {
+        _btnController.reset();
+      });
+      return;
+    }
+
+    if (!(await checkConnection(context))) {
+      _btnController.error();
+      Future.delayed(const Duration(seconds: 1), () {
+        _btnController.reset();
+      });
+      return;
+    }
+
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       var response = await Authentication().login(_email, _password);
@@ -48,6 +68,7 @@ class _SignInScreenState extends State<SignInScreen> {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
+        appBar: AppBar(title: const Text("FAKE FIXD")),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -60,17 +81,14 @@ class _SignInScreenState extends State<SignInScreen> {
                   _buildEmailTF(),
                   _buildPasswordTF(),
                   const SizedBox(height: 20.0),
-                  SizedBox(
-                    width: 250.0,
-                    child: TextButton(
-                      onPressed: _submit,
-                      child: const Text(
-                        'Login',
-                        style: TextStyle(
-                          fontSize: 18.0,
-                        ),
-                      ),
+                  RoundedLoadingButton(
+                    color: Theme.of(context).primaryColor,
+                    child: const Text(
+                      'Login',
+                      style: TextStyle(color: Colors.white),
                     ),
+                    controller: _btnController,
+                    onPressed: _submit,
                   ),
                 ],
               ),

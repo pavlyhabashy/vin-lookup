@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keychain/flutter_keychain.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:string_validator/string_validator.dart';
 import 'package:vin_lookup/classes/recall.dart';
 import 'package:vin_lookup/classes/vehicle.dart';
@@ -22,6 +23,8 @@ class VinLookupScreen extends StatefulWidget {
 class _VinLookupScreenState extends State<VinLookupScreen> {
   final _formKey = GlobalKey<FormState>();
   String _vin = "WAUYGAFC6CN174200";
+  final RoundedLoadingButtonController _btnController =
+      RoundedLoadingButtonController();
 
   @override
   Widget build(BuildContext context) {
@@ -81,14 +84,13 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
                       ],
                       onChanged: (input) => _vin = input,
                     ),
-                    TextButton(
+                    const SizedBox(height: 32),
+                    RoundedLoadingButton(
+                      color: Theme.of(context).primaryColor,
+                      child: const Text('Look Up VIN',
+                          style: TextStyle(color: Colors.white)),
+                      controller: _btnController,
                       onPressed: _submit,
-                      child: const Text(
-                        'Look Up',
-                        style: TextStyle(
-                          fontSize: 18.0,
-                        ),
-                      ),
                     ),
                   ],
                 ),
@@ -101,12 +103,19 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
   }
 
   _submit() async {
+    FocusManager.instance.primaryFocus?.unfocus();
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       if (!(await checkConnection(context))) {
+        _btnController.error();
+        _btnController.reset();
+
         return;
       }
       await _lookUpVIN();
+    } else {
+      _btnController.error();
+      _btnController.reset();
     }
   }
 
@@ -129,6 +138,8 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
     }
 
     if (make == "null" || model == "null" || year == "null") {
+      _btnController.error();
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("VIN not found. Please check your VIN and try again."),
@@ -153,5 +164,6 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
         builder: (_) => RecallsScreen(vehicle: vehicle),
       ),
     );
+    _btnController.reset();
   }
 }
