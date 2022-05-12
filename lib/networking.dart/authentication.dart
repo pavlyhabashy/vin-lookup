@@ -52,4 +52,12 @@ class Authentication {
     await FlutterKeychain.put(
         key: "user", value: jsonEncode(user.toJson()).toString());
   }
+
+  Future<User> getStoredUser() async {
+    String? userData = await FlutterKeychain.get(key: "user");
+    if (userData != null) {
+      return User.fromJson(jsonDecode(userData));
+    }
+    throw Exception('Not user found.');
+  }
 }
