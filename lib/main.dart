@@ -23,7 +23,11 @@ class MyApp extends StatelessWidget {
         future: Authentication().autoLogin(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Scaffold(body: CircularProgressIndicator());
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
           }
           if (snapshot.data == false) {
             return const SignInScreen();
