@@ -26,40 +26,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
               title: const Text("Profile"),
             ),
             body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundColor: Colors.green.shade50,
-                      child: const Icon(
-                        Icons.person,
-                        size: 50,
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Colors.green.shade50,
+                        child: const Icon(
+                          Icons.person,
+                          size: 50,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      user.name,
-                      style: Theme.of(context).textTheme.headline5,
-                    ),
-                    const SizedBox(height: 48),
-                    _buildUserInfoRow(
-                      icon: Icons.email,
-                      title: "Email",
-                      info: user.email,
-                    ),
-                    _buildUserInfoRow(
-                      icon: Icons.phone_rounded,
-                      title: "Phone",
-                      info: user.phoneNumber,
-                    ),
-                    _buildUserInfoRow(
-                      icon: Icons.location_on,
-                      title: "Country",
-                      info: user.country,
-                    ),
-                  ],
+                      const SizedBox(height: 16),
+                      Text(
+                        user.name,
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
+                      const SizedBox(height: 48),
+                      _buildUserInfoRow(
+                        icon: Icons.email,
+                        title: "Email",
+                        info: user.email,
+                      ),
+                      _buildUserInfoRow(
+                        icon: Icons.phone_rounded,
+                        title: "Phone",
+                        info: user.phoneNumber,
+                      ),
+                      _buildUserInfoRow(
+                        icon: Icons.location_on,
+                        title: "Country",
+                        info: user.country,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

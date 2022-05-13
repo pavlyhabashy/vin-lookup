@@ -73,6 +73,7 @@ class RecallsScreen extends StatelessWidget {
                                 ),
                               ),
                               Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   _buildRecallInfoBlock(
                                       context, "Component", recall.component),
@@ -100,12 +101,19 @@ class RecallsScreen extends StatelessWidget {
         ],
       );
 
-  String _formatDate(Recall recall) {
-    DateFormat inputFormat = DateFormat("dd/mm/yyyy");
-    var inputDate = inputFormat.parse(recall.reportReceivedDate);
-    DateFormat outputFormat = DateFormat("MMMM d, yyyy");
-    String outputDate = outputFormat.format(inputDate);
-    return outputDate;
+  Widget _buildRecallInfoBlock(
+      BuildContext context, String title, String info) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: Theme.of(context).textTheme.headline6,
+        ),
+        const SizedBox(height: 8),
+        Text('Entry $info'),
+      ],
+    );
   }
 
   Padding _buildVehicleInfo(BuildContext context) {
@@ -137,18 +145,11 @@ class RecallsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRecallInfoBlock(
-      BuildContext context, String title, String info) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: Theme.of(context).textTheme.headline6,
-        ),
-        const SizedBox(height: 8),
-        Text('Entry $info'),
-      ],
-    );
+  String _formatDate(Recall recall) {
+    DateFormat inputFormat = DateFormat("dd/mm/yyyy");
+    var inputDate = inputFormat.parse(recall.reportReceivedDate);
+    DateFormat outputFormat = DateFormat("MMMM d, yyyy");
+    String outputDate = outputFormat.format(inputDate);
+    return outputDate;
   }
 }

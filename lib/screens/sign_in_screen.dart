@@ -32,23 +32,27 @@ class _SignInScreenState extends State<SignInScreen> {
       child: Scaffold(
         appBar: AppBar(title: const Text("FAKE FIXD")),
         body: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    _buildEmailTF(),
-                    _buildPasswordTF(),
-                    const SizedBox(height: 20.0),
-                    _buildLoginButton(context),
-                  ],
-                ),
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        _buildEmailTF(),
+                        _buildPasswordTF(),
+                        const SizedBox(height: 20.0),
+                        _buildLoginButton(context),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
