@@ -25,7 +25,8 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
   final RoundedLoadingButtonController _btnController =
       RoundedLoadingButtonController();
 
-  String _vin = "WAUYGAFC6CN174200";
+  String _vin = "WDBNG84J56A469721"; // No recalls
+  // String _vin = "1MEFM55S5YA648573"; // Recalls
 
   @override
   Widget build(BuildContext context) {
