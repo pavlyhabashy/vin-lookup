@@ -144,8 +144,8 @@ class _SignInScreenState extends State<SignInScreen> {
       case 200: // Success
 
         // Create and save user info and credentials
-        User user = User.fromJson(jsonDecode(response.body)["data"]);
-        user.addPassword(_password);
+        User user = User.fromJson(jsonDecode(response.body)["data"], _password);
+        user.password = _password;
         Authentication().saveUser(user);
 
         // Go to VIN Lookup Screen

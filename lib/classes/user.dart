@@ -4,7 +4,7 @@ class User {
   final String email;
   final String phoneNumber;
   final String country;
-  final String authenticationToken;
+  String? authenticationToken;
   String? password;
 
   User(
@@ -14,15 +14,24 @@ class User {
     this.phoneNumber,
     this.country,
     this.authenticationToken,
+    this.password,
   );
 
-  User.fromJson(Map<String, dynamic> json)
+  User.fromJson(Map<String, dynamic> json, String pass)
       : id = json['id'].toString(),
         name = json['name'],
         email = json["email"],
         phoneNumber = json["phone_number"],
         country = json["country"],
-        authenticationToken = json["authentication_token"];
+        authenticationToken = json["authentication_token"],
+        password = pass;
+
+  User.fromJsonNoAuth(Map<String, dynamic> json)
+      : id = json['id'].toString(),
+        name = json['name'],
+        email = json["email"],
+        phoneNumber = json["phone_number"],
+        country = json["country"];
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -33,8 +42,4 @@ class User {
         'authentication_token': authenticationToken,
         'password': password,
       };
-
-  addPassword(String password) {
-    this.password = password;
-  }
 }
