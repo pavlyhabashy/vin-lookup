@@ -22,8 +22,8 @@ class _SignInScreenState extends State<SignInScreen> {
   final RoundedLoadingButtonController _btnController =
       RoundedLoadingButtonController();
 
-  String _email = "flutter@example.com";
-  String _password = "Ox8CiV2eRIO72m19euLh";
+  String? _email;
+  String? _password;
 
   @override
   Widget build(BuildContext context) {
@@ -139,12 +139,13 @@ class _SignInScreenState extends State<SignInScreen> {
     _formKey.currentState!.save();
 
     // Attempt login
-    var response = await Authentication().login(_email, _password);
+    var response = await Authentication().login(_email!, _password!);
     switch (response.statusCode) {
       case 200: // Success
 
         // Create and save user info and credentials
-        User user = User.fromJson(jsonDecode(response.body)["data"], _password);
+        User user =
+            User.fromJson(jsonDecode(response.body)["data"], _password!);
         user.password = _password;
         Authentication().saveUser(user);
 
