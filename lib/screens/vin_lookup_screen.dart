@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_keychain/flutter_keychain.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:string_validator/string_validator.dart';
 import 'package:vin_lookup/classes/recall.dart';
@@ -25,8 +24,9 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
   final RoundedLoadingButtonController _btnController =
       RoundedLoadingButtonController();
 
-  String _vin = "WDBNG84J56A469721"; // No recalls
+  // String _vin = "WDBNG84J56A469721"; // No recalls
   // String _vin = "1MEFM55S5YA648573"; // Recalls
+  String? _vin;
 
   @override
   Widget build(BuildContext context) {
@@ -35,12 +35,6 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
       child: WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(
-          floatingActionButton: FloatingActionButton(
-            onPressed: () async {
-              await FlutterKeychain.remove(key: "user");
-              Navigator.pop(context);
-            },
-          ),
           appBar: AppBar(
             title: const Text("Vin Lookup"),
             automaticallyImplyLeading: false,
@@ -98,6 +92,7 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
       initialValue: _vin,
       decoration: const InputDecoration(labelText: 'Enter Your VIN'),
       keyboardType: TextInputType.text,
+      textCapitalization: TextCapitalization.characters,
       autocorrect: false,
       enableSuggestions: false,
       validator: (input) {
@@ -125,7 +120,7 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
 
   _lookUpVIN() async {
     // GET VIN using NHTSA API
-    var response = await vinGetRequest(_vin);
+    var response = await vinGetRequest(_vin!);
     var results = jsonDecode(response.body)["Results"] as List<dynamic>;
     String make = "", model = "", year = "";
     for (var result in results) {
