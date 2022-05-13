@@ -65,7 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         } else {
           return const Scaffold(
             body: Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator.adaptive(),
             ),
           );
         }
@@ -77,21 +77,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
       {required IconData icon, required String title, required String info}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Icon(
-                icon,
-                color: Colors.green.shade700,
-              ),
-              const SizedBox(width: 8.0),
-              Text(title),
-            ],
-          ),
-          Text(info),
-        ],
+      child: SizedBox(
+        width: double.infinity,
+        child: Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  icon,
+                  color: Colors.green.shade700,
+                  size: Theme.of(context).iconTheme.size,
+                ),
+                const SizedBox(width: 8.0),
+                Text(title),
+              ],
+            ),
+            Text(info),
+          ],
+        ),
       ),
     );
   }

@@ -55,21 +55,23 @@ class RecallsScreen extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.only(
                                     bottom: 8.0, top: 4.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Reported: ${_formatDate(recall)}",
-                                      style:
-                                          Theme.of(context).textTheme.caption,
-                                    ),
-                                    Text(
-                                      "${index + 1}/${vehicle.recalls?.length}",
-                                      style:
-                                          Theme.of(context).textTheme.caption,
-                                    )
-                                  ],
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  child: Wrap(
+                                    alignment: WrapAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Reported: ${_formatDate(recall)}",
+                                        style:
+                                            Theme.of(context).textTheme.caption,
+                                      ),
+                                      Text(
+                                        "${index + 1}/${vehicle.recalls?.length}",
+                                        style:
+                                            Theme.of(context).textTheme.caption,
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                               Column(
@@ -116,16 +118,20 @@ class RecallsScreen extends StatelessWidget {
     );
   }
 
-  Padding _buildVehicleInfo(BuildContext context) {
+  Widget _buildVehicleInfo(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildVehicleInfoColumn(context, "Make", vehicle.make),
-          _buildVehicleInfoColumn(context, "Model", vehicle.model),
-          _buildVehicleInfoColumn(context, "Year", vehicle.year),
-        ],
+      child: SizedBox(
+        width: double.infinity,
+        child: Wrap(
+          alignment: WrapAlignment.spaceEvenly,
+          spacing: 8.0,
+          children: [
+            _buildVehicleInfoColumn(context, "Make", vehicle.make),
+            _buildVehicleInfoColumn(context, "Model", vehicle.model),
+            _buildVehicleInfoColumn(context, "Year", vehicle.year),
+          ],
+        ),
       ),
     );
   }
@@ -136,10 +142,11 @@ class RecallsScreen extends StatelessWidget {
       children: [
         Text(
           title,
+          style: Theme.of(context).textTheme.bodySmall,
         ),
         Text(
           info,
-          style: Theme.of(context).textTheme.headline6,
+          style: Theme.of(context).textTheme.bodyLarge,
         ),
       ],
     );
