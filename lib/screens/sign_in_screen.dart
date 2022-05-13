@@ -85,6 +85,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   Widget _buildLoginButton(BuildContext context) {
     return RoundedLoadingButton(
+      elevation: 0,
       color: Theme.of(context).primaryColor,
       child: const Text(
         'Login',

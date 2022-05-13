@@ -79,8 +79,14 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
 
   Widget _buildLookupButton(BuildContext context) {
     return RoundedLoadingButton(
+      elevation: 0,
       color: Theme.of(context).primaryColor,
-      child: const Text('Look Up VIN', style: TextStyle(color: Colors.white)),
+      child: const Text(
+        'Look Up VIN',
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
       controller: _btnController,
       onPressed: _submit,
     );
