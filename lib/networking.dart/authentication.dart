@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_keychain/flutter_keychain.dart';
 import 'package:http/http.dart';
 import 'package:vin_lookup/classes/user.dart';
+import 'package:vin_lookup/networking.dart/shared.dart';
 
 class Authentication {
   Future<bool> autoLogin() async {
@@ -54,6 +56,52 @@ class Authentication {
         }
       }),
     );
+  }
+
+  Future<User> pullUserAndReauthenticate(BuildContext context) async {
+    // Get stored user from keychain
+    User storedUser = await getStoredUser();
+
+    // No internet connection, return saved user
+    if (!(await checkConnection(context))) {
+      return storedUser;
+    }
+
+    // GET user info
+    Response response =
+        await getUser(storedUser.id, storedUser.authenticationToken!);
+
+    switch (response.statusCode) {
+      case 200:
+        // Authentication success, return user
+        User pulledUser = User.fromJsonNoAuth(jsonDecode(response.body)["data"],
+            storedUser.password!, storedUser.authenticationToken!);
+        saveUser(pulledUser);
+        return pulledUser;
+      default:
+        // Authentication failed, attempt reauthentication
+        var responseWithNewAuth =
+            await login(storedUser.email, storedUser.password!);
+
+        switch (responseWithNewAuth.statusCode) {
+          case 200:
+            // Reauthentication success, return user with auth
+            var json = jsonDecode(responseWithNewAuth.body);
+            User user = User.fromJson(json["data"], storedUser.password!);
+            saveUser(user);
+            return user;
+
+          default:
+            // Reauthentication failed, return saved user
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Failed to reauthenticate."),
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+            return storedUser;
+        }
+    }
   }
 
   saveUser(User user) async {
