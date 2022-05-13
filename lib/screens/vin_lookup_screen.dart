@@ -77,7 +77,7 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
     );
   }
 
-  RoundedLoadingButton _buildLookupButton(BuildContext context) {
+  Widget _buildLookupButton(BuildContext context) {
     return RoundedLoadingButton(
       color: Theme.of(context).primaryColor,
       child: const Text('Look Up VIN', style: TextStyle(color: Colors.white)),
@@ -86,7 +86,7 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
     );
   }
 
-  TextFormField _buildVINInputTF() {
+  Widget _buildVINInputTF() {
     return TextFormField(
       initialValue: _vin,
       decoration: const InputDecoration(labelText: 'Enter Your VIN'),
@@ -117,6 +117,7 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
   }
 
   _lookUpVIN() async {
+    // GET VIN using NHTSA API
     var response = await vinGetRequest(_vin);
     var results = jsonDecode(response.body)["Results"] as List<dynamic>;
     String make = "", model = "", year = "";
@@ -134,8 +135,9 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
       }
     }
 
+    // If fields are null, then no car found with VIN input.
     if (make == "null" || model == "null" || year == "null") {
-      _btnController.error();
+      _loginButtonErrorReset();
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -146,8 +148,10 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
       return;
     }
 
+    // Create vehicle object
     Vehicle vehicle = Vehicle(make: make, model: model, year: year);
 
+    // GET recalls by make, model, year
     var recallResponse = await recallGetRequest(make, model, year);
     var recallResults = jsonDecode(recallResponse.body);
     List<Recall> recalls = List.empty(growable: true);
@@ -155,6 +159,8 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
       recalls.add(Recall.fromJson(result));
     }
     vehicle.setRecalls(recalls);
+
+    // Navigate to Recalls screen
     Navigator.push(
       context,
       CupertinoPageRoute(
@@ -165,17 +171,25 @@ class _VinLookupScreenState extends State<VinLookupScreen> {
   }
 
   _submit() async {
+    // Dismiss keyboard
     FocusManager.instance.primaryFocus?.unfocus();
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      if (!(await checkConnection(context))) {
-        _loginButtonErrorReset();
 
-        return;
-      }
-      await _lookUpVIN();
-    } else {
+    // Check input param is valid
+    if (!_formKey.currentState!.validate()) {
       _loginButtonErrorReset();
+      return;
     }
+
+    // Check internet connection
+    if (!(await checkConnection(context))) {
+      _loginButtonErrorReset();
+      return;
+    }
+
+    // Save form state
+    _formKey.currentState!.save();
+
+    // Look up VIN
+    await _lookUpVIN();
   }
 }
