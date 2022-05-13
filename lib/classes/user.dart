@@ -26,12 +26,14 @@ class User {
         authenticationToken = json["authentication_token"],
         password = pass;
 
-  User.fromJsonNoAuth(Map<String, dynamic> json)
+  User.fromJsonNoAuth(Map<String, dynamic> json, String pass, String auth)
       : id = json['id'].toString(),
         name = json['name'],
         email = json["email"],
         phoneNumber = json["phone_number"],
-        country = json["country"];
+        country = json["country"],
+        password = pass,
+        authenticationToken = auth;
 
   Map<String, dynamic> toJson() => {
         'id': id,

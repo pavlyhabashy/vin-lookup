@@ -91,8 +91,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     switch (response.statusCode) {
       case 200:
         // Authentication success, return user
-        User pulledUser = User.fromJson(
-            jsonDecode(response.body)["data"], storedUser.password!);
+        User pulledUser = User.fromJsonNoAuth(jsonDecode(response.body)["data"],
+            storedUser.password!, storedUser.authenticationToken!);
+        Authentication().saveUser(pulledUser);
         return pulledUser;
       default:
         // Authentication failed, attempt reauthentication
